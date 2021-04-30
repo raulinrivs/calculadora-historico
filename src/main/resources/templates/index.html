@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Calculadora com histórico SpringWeb</title>
+</head>
+<body>
+    <div class="row ml-3">
+        <form method="POST" action="calcular" id="form">
+            <div class="form-group col-md-10 mt-3">
+                <div class="input-group mb-3">
+                    <input class="form-control form-control-lg" id="campo" name="campo" th:value="${resultado}" value=""></input>
+                    <div class="input-group col-md-2">
+                        <span onclick="apagar()" class="btn btn-danger " type="span" id="apagar" name="apagar"><-</span>
+                    </div>
+                    <div class="input-group col-md-2">
+                        <span onclick="enter()" class="btn btn-success " type="submit" id="enter" name="enter">GO!</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+              <span onclick="adicionarElemento('7')" class="btn btn-secondary col-md-2" id="sete" name="sete">7</span>
+              <span onclick="adicionarElemento('8')" class="btn btn-secondary col-md-2" id="oito" name="oito">8</span>
+              <span onclick="adicionarElemento('9')" class="btn btn-secondary col-md-2" id="nove" name="nove">9</span>
+              <span onclick="adicionarElemento('/')" class="btn btn-primary col-md-2" id="divisao" name="divisao">/</span>
+            </div>
+            <div class="form-group">
+                <span onclick="adicionarElemento('4')" class="btn btn-secondary col-md-2" id="quatro" name="quatro">4</span>
+                <span onclick="adicionarElemento('5')" class="btn btn-secondary col-md-2" id="cinco" name="cinco">5</span>
+                <span onclick="adicionarElemento('6')" class="btn btn-secondary col-md-2" id="seis" name="seis">6</span>
+                <span onclick="adicionarElemento('*')" class="btn btn-primary col-md-2" id="multiplicacao" name="multiplicacao">*</span>
+            </div>
+            <div class="form-group">
+                <span onclick="adicionarElemento('1')" class="btn btn-secondary col-md-2" id="um" name="um">1</span>
+                <span onclick="adicionarElemento('2')" class="btn btn-secondary col-md-2" id="dois" name="dois">2</span>
+                <span onclick="adicionarElemento('3')" class="btn btn-secondary col-md-2" id="tres" name="tres">3</span>
+                <span onclick="adicionarElemento('-')" class="btn btn-primary col-md-2" id="subtracao" name="subtracao">-</span>
+            </div>
+            <div class="form-group">
+                <span onclick="adicionarElemento('0')" class="btn btn-secondary col-md-4 mr-1" id="zero" name="zero">0</span>
+                <span onclick="adicionarElemento(',')" class="btn btn-secondary col-md-2" id="virgula" name="virgula">,</span>
+                <span onclick="adicionarElemento('+')" class="btn btn-primary col-md-2" id="adicao" name="adicao">+</span>
+            </div>
+        </form>
+        <div class="form-group ml-2 mt-3">
+            <ul class="list-group">
+                <li class="list-group-item" th:each="item : ${historico}" th:text="${item}">
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    
+</body>
+<script>
+function adicionarElemento(elemento) {
+  campo = document.getElementById("campo").value;
+  if (elemento == '+' || elemento == '-' || elemento == '*' || elemento == '/'){
+    if (campo.indexOf('+') == -1 && campo.indexOf('-') == -1 && campo.indexOf('*') == -1 && campo.indexOf('/') == -1){
+        campo = campo + elemento;
+    }
+  }else{
+    campo = campo + elemento;
+  }
+  document.getElementById("campo").value = campo;
+}
+
+function apagar(){
+    campo = document.getElementById("campo").value;
+    ultimoCharc = campo.length;
+    campo = campo.slice(0, ultimoCharc - 1);
+    document.getElementById("campo").value = campo;
+}
+
+function enter(){
+    campo = document.getElementById("campo").value;
+    if ('+' == (campo[0]) || '-' == (campo[0]) || '*' == (campo[0]) || '/' == (campo[0]) || campo.length==0){
+        alert('A expressão inserida é invalida:\n   Está faltando o primeiro Algarismo');
+        document.getElementById("campo").value = '';
+        return 0
+    }
+    if (campo.indexOf('+') == -1 && campo.indexOf('-') == -1 && campo.indexOf('*') == -1 && campo.indexOf('/') == -1){
+        alert('A expressão inserida é invalida:\n   Está faltando um operando');
+        return 0
+    }
+    if (campo.indexOf('+') == (campo.length - 1) || campo.indexOf('-') == (campo.length - 1) || campo.indexOf('*') == (campo.length - 1) || campo.indexOf('/') == (campo.length - 1)){
+        alert('A expressão inserida é invalida:\n   Está faltando o segundo Algarismo');
+        return 0
+    }
+    document.getElementById("form").submit();
+}
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</html>
